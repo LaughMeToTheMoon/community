@@ -6,6 +6,7 @@ import com.sjl.communitytest.dto.AccessTokenProvider;
 import com.sjl.communitytest.dto.GitHubUser;
 import com.sjl.communitytest.provider.GithubProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,15 +22,28 @@ public class OauthController
 {
     @Autowired
     private GithubProvider provider;
+    /**github申请的
+     */
+    @Value("${github.client.id}")
+    private String clientId;
+    /**github申请的
+     */
+    @Value("${github.client.secret}")
+    private String clientSecret;
+    /**github返回的code的回调
+     */
+    @Value("${github.Redirect.uri}")
+    private String redirectUri;
+
     @GetMapping("/callback")
     public String callback(@RequestParam(name = "code") String code,
                            @RequestParam(name = "state") String state)
     {
         AccessTokenProvider tokenProvider = new AccessTokenProvider();
-        tokenProvider.setClient_id("2029275cbd6cb2f7e453");
-        tokenProvider.setClient_secret("f9564d594b1bd0d3bd520f8c203132fa4b50733c");
+        tokenProvider.setClient_id(clientId);
+        tokenProvider.setClient_secret(clientSecret);
         tokenProvider.setCode(code);
-        tokenProvider.setRedirect_uri("http://localhost:8080/callback");
+        tokenProvider.setRedirect_uri(redirectUri);
         tokenProvider.setState(state);
 
         try {
